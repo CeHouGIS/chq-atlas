@@ -8,12 +8,11 @@ using fixed ONS December 2024 boundaries, with linked sales from 2012–2024.
 
 ## Explore
 
-- Switch between pooled and annual maps.
-- Compare the 41-variable equal-weight baseline, the 49-variable version
-  including potential attributes, transaction counts, and variable completeness.
-- Search by district name or ONS code, click the map or ranking to select an area,
-  and zoom or pan the map.
-- Download administrative-area CSV tables and publication-quality figures.
+The page has two sections:
+
+1. A CHQ map with year selection, authority search, zoom and area details.
+2. An attribute table for all 41 baseline variables, with source fields,
+   scoring rules and missing rates. The dictionary is downloadable as CSV.
 
 CHQ is averaged across the available coded variables for each transaction,
 then averaged across transactions in each area. These are sales-sample means,
@@ -31,8 +30,8 @@ python3 -m http.server 8000
 Open http://localhost:8000. `index.html`, `assets/`, and `downloads/` form the
 complete static site. GitHub Pages serves the root of the `main` branch.
 
-`tests/verify_site.cjs` checks desktop/mobile rendering, selection, year/metric
-controls, downloads and runtime errors using a local Chromium binary and Node
+`tests/verify_site.cjs` checks desktop/mobile rendering, selection, year
+controls, the 41-row variable table, downloads and runtime errors using a local Chromium binary and Node
 22 or later:
 
 ```bash
@@ -42,7 +41,7 @@ CHROME_BIN=/path/to/chrome node tests/verify_site.cjs http://localhost:8000
 ## Data and methods
 
 See [METHODOLOGY.md](METHODOLOGY.md) for calculation and geographic definitions.
-The published CSVs contain area-level aggregates only. No transaction identifiers,
+The published CSVs contain area-level aggregates and the variable dictionary. No transaction identifiers,
 addresses, certificates, private repository content or credentials are included.
 The underlying row-level data and analysis pipeline are maintained separately;
 this repository contains the published map snapshot and its website.

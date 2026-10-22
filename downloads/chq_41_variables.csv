@@ -1,0 +1,42 @@
+﻿number,variable,label,source_fields,higher_chq_means,scoring_rule,missing_pct
+1,walls_energy_eff,Wall energy-efficiency rating,walls_energy_eff,Higher source value,Very poor = 0; poor = 0.25; average = 0.5; good = 0.75; very good = 1.,0.001510820565564508
+2,roof_energy_eff,Roof energy-efficiency rating,roof_energy_eff,Higher source value,Very poor = 0; poor = 0.25; average = 0.5; good = 0.75; very good = 1.,12.733630659768469
+3,floor_energy_eff,Floor energy-efficiency rating,floor_energy_eff,Higher source value,Very poor = 0; poor = 0.25; average = 0.5; good = 0.75; very good = 1.,86.63592223119812
+4,windows_energy_eff,Window energy-efficiency rating,windows_energy_eff,Higher source value,Very poor = 0; poor = 0.25; average = 0.5; good = 0.75; very good = 1.,0.0012132346965842977
+5,mainheat_energy_eff,Main heating energy-efficiency rating,mainheat_energy_eff,Higher source value,Very poor = 0; poor = 0.25; average = 0.5; good = 0.75; very good = 1.,0.0003204770896658715
+6,mainheat_env_eff,Main heating environmental rating,mainheat_env_eff,Higher source value,Very poor = 0; poor = 0.25; average = 0.5; good = 0.75; very good = 1.,0.000938540048300851
+7,mainheatc_energy_eff,Heating controls energy-efficiency rating,mainheatc_energy_eff,Higher source value,Very poor = 0; poor = 0.25; average = 0.5; good = 0.75; very good = 1.,0.00045782441380204375
+8,lighting_energy_eff,Lighting energy-efficiency rating,lighting_energy_eff,Higher source value,Very poor = 0; poor = 0.25; average = 0.5; good = 0.75; very good = 1.,0.0003204770896658715
+9,hot_water_energy_eff,Hot-water energy-efficiency rating,hot_water_energy_eff,Higher source value,Very poor = 0; poor = 0.25; average = 0.5; good = 0.75; very good = 1.,0.003731268972528845
+10,hot_water_env_eff,Hot-water environmental rating,hot_water_env_eff,Higher source value,Very poor = 0; poor = 0.25; average = 0.5; good = 0.75; very good = 1.,0.005631240289827311
+11,walls_description,Wall construction and insulation,walls_description,Higher coded score,Mean associated EPC component score for each description (at least 50 calibration records). Unmatched text: insulation/U-value heuristic; internal surfaces excluded.,0.005196307096710928
+12,roof_description,Roof construction and insulation,roof_description,Higher coded score,Mean associated EPC component score for each description (at least 50 calibration records). Unmatched text: insulation/U-value heuristic; internal surfaces excluded.,12.73848359855483
+13,floor_description,Floor construction and insulation,floor_description,Higher coded score,Mean associated EPC component score for each description (at least 50 calibration records). Unmatched text: insulation/U-value heuristic; internal surfaces excluded.,13.656719134107531
+14,windows_description,Window description,windows_description,Higher coded score,Mean associated EPC component score for each description (at least 50 calibration records). Unmatched text: glazing-type fallback.,0.0011216698138305503
+15,mainheat_description,Main heating system,mainheat_description,Higher coded score,Mean associated EPC component score for each description (at least 50 calibration records).,0.07851688696796089
+16,mainheatcont_description,Heating controls,mainheatcont_description,Higher coded score,Mean associated EPC component score for each description (at least 50 calibration records). Unmatched text: heating-control fallback.,0.4023589860745802
+17,hotwater_description,Hot-water system,hotwater_description,Higher coded score,Mean associated EPC component score for each description (at least 50 calibration records).,0.010369722972736195
+18,main_fuel,Main heating fuel,main_fuel,Higher coded score,Mean associated EPC component score for each description (at least 50 calibration records).,2.855450868916398
+19,glazed_type,Glazing type,glazed_type,Higher coded score,Triple/high-performance = 1; double/multiple = 0.75; secondary = 0.5; single = 0.,43.09574459074732
+20,multi_glaze_proportion,Multiple-glazing proportion,multi_glaze_proportion,Higher source value,Reported percentage ÷ 100.,2.134720785480193
+21,glazed_area,Glazed area category,glazed_area,Lower source value,Much less than typical = 1; less = 0.75; normal = 0.5; more = 0.25; much more = 0.,40.428116187595386
+22,flat_top_storey,Top-storey flat status,flat_top_storey;property_type,Higher coded score,Flats/maisonettes only: top storey = 0; other storey = 1. Other dwelling types are excluded.,79.83519236751764
+23,heat_loss_corridor,Corridor heat-loss category,heat_loss_corridor,Higher coded score,Heated corridor or no corridor = 1; unheated corridor = 0.,90.44376233693725
+24,heated_room_share,Heated-room share,number_heated_rooms;number_habitable_rooms,Higher source value,Heated rooms ÷ habitable rooms; ratios outside 0–1 are excluded.,18.210034732849156
+25,unheated_corridor_length_per_sqrt_area,Normalised unheated corridor length,unheated_corridor_length;total_floor_area;heat_loss_corridor,Lower source value,"Unheated corridor length ÷ √floor area, only where an unheated corridor is recorded. P1–P99 scale [0.1154, 2.026], clipped to 0–1; reversed.",95.48459226272162
+26,open_fireplace_density,Open fireplace density,number_open_fireplaces;number_habitable_rooms;total_floor_area,Lower source value,"Open fireplaces ÷ habitable rooms; if room count is missing, divide by (floor area ÷ 20). P1–P99 scale [0, 0.4], clipped to 0–1; reversed.",4.578244138242482e-05
+27,current_energy_efficiency,Current energy-efficiency score,current_energy_efficiency,Higher source value,"Reported current energy-efficiency score. P1–P99 scale [22, 88], clipped to 0–1.",0.0
+28,current_energy_rating,Current EPC band,current_energy_rating,Higher source value,"EPC bands: A = 1, B = 5/6, C = 4/6, D = 3/6, E = 2/6, F = 1/6, G = 0.",0.0
+29,energy_consumption_current,Current energy consumption,energy_consumption_current,Lower source value,"Reported current energy use (kWh/m²/year). P1–P99 scale [43, 651], clipped to 0–1; reversed.",0.00022891220690102188
+30,environment_impact_current,Current environmental-impact score,environment_impact_current,Higher source value,"Reported current environmental-impact score. P1–P99 scale [21, 93], clipped to 0–1.",0.0
+31,co2_emiss_curr_per_floor_area,Reported CO₂ emissions intensity,co2_emiss_curr_per_floor_area,Lower source value,"Reported CO₂ emissions per floor area (kg/m²/year). P1–P99 scale [8, 115], clipped to 0–1; reversed.",0.697106343683751
+32,co2_emissions_current_per_area,Derived CO₂ emissions intensity,co2_emissions_current;total_floor_area,Lower source value,"1,000 × current CO₂ emissions (tonnes/year) ÷ floor area (m²). P1–P99 scale [7.627, 114.7], clipped to 0–1; reversed.",0.697495494435485
+33,heating_cost_current_per_area,Heating cost per floor area,heating_cost_current;total_floor_area,Lower source value,"Reported annual cost (£) ÷ floor area (m²). P1–P99 scale [1.741, 24.81], clipped to 0–1; reversed.",0.007233625738156668
+34,hot_water_cost_current_per_area,Hot-water cost per floor area,hot_water_cost_current;total_floor_area,Lower source value,"Reported annual cost (£) ÷ floor area (m²). P1–P99 scale [0.4779, 7.429], clipped to 0–1; reversed.",0.007393864282989604
+35,lighting_cost_current_per_area,Lighting cost per floor area,lighting_cost_current;total_floor_area,Lower source value,"Reported annual cost (£) ÷ floor area (m²). P1–P99 scale [0.4955, 2.172], clipped to 0–1; reversed.",0.007164952076088582
+36,low_energy_lighting,Low-energy lighting proportion,low_energy_lighting,Higher source value,Reported low-energy lighting percentage ÷ 100.,0.00011445610345051094
+37,low_energy_fixed_lighting_share,Low-energy fixed-lighting share,low_energy_fixed_lighting_outlets_count;fixed_lighting_outlets_count,Higher source value,Low-energy fixed outlets ÷ all fixed outlets; ratios outside 0–1 are excluded.,0.6431975189579386
+38,lighting_description,Lighting description,lighting_description,Higher source value,No low-energy lighting = 0; all fixed lighting = 1; otherwise extract the reported percentage ÷ 100.,0.036740409208035896
+39,solar_water_heating_flag,Solar water heating,solar_water_heating_flag,Higher source value,Yes = 1; no = 0.,18.20946245233189
+40,photo_supply,Photovoltaic supply proportion,photo_supply,Higher source value,Reported photovoltaic electricity supply percentage ÷ 100.,40.67735579847211
+41,wind_turbine_present,Wind turbine presence,wind_turbine_count,Higher source value,Recorded turbine count > 0 = 1; recorded zero = 0.,0.030513997180259267

@@ -19,8 +19,9 @@ Missing or inapplicable variables are excluded from that transaction’s
 denominator, so effective weights can differ between transactions. Each local
 authority’s score is the arithmetic mean of its valid transaction CHQ scores,
 giving each transaction equal weight. No housing-stock weights are applied.
-The explorer also offers an extended score that averages all 49 variables,
-including eight potential-performance variables.
+The separate analysis also contains an extended 49-variable score, including
+eight potential-performance variables. The website displays the 41-variable
+baseline only.
 
 Geographic matching uses `onspd_lad_code` and ONS December 2024 Local Authority
 Districts (BGC) boundaries. The same boundaries are used for every year from
@@ -58,6 +59,9 @@ This sensitivity check addresses repeated-sales weighting only.
 
 ## Published files
 
+- `downloads/chq_41_variables.csv`: all 41 baseline variables, definitions, source
+  fields, scoring rules and missing rates. This is also shown in the website table.
+
 - `downloads/lad_chq_summary.csv`: pooled local authority summaries.
 - `downloads/lad_chq_by_year.csv`: annual local authority summaries.
 - `downloads/region_chq_summary.csv`: pooled regional summaries.
@@ -89,7 +93,7 @@ not part of this website repository.
 Aggregation checks confirmed source-row order and transaction/EPC identifiers,
 geometry matches, consistent counts across geographic levels, and reconciliation
 of annual and pooled means. Website checks cover all 318 map polygons, search,
-keyboard selection, year and metric controls, rankings, zoom, downloads and
+keyboard selection, year controls, the 41-row variable table, zoom, downloads and
 mobile layout. See [README.md](README.md) for running the website checks.
 
 ## Boundary attribution
