@@ -31,7 +31,7 @@ let ws,closeBrowser;
  assert.equal(await ev(`document.getElementById('score').textContent`),'75.88');
  await ev(`document.getElementById('metric').value='potential';document.getElementById('metric').dispatchEvent(new Event('change'));true`);
  assert.equal(await ev(`document.getElementById('score').textContent`),'77.97');
- assert.equal(await ev(`document.getElementById('rankingTitle').textContent`),'含潜力分数较高的行政区');
+ assert.equal(await ev(`document.getElementById('rankingTitle').textContent`),'Authorities with higher CHQ + potential');
  await ev(`document.getElementById('metric').value='coverage';document.getElementById('metric').dispatchEvent(new Event('change'));true`);
  assert.equal(await ev(`document.getElementById('score').textContent`),'78.6%');
  await ev(`document.getElementById('year').value='2012';document.getElementById('year').dispatchEvent(new Event('change'));document.getElementById('metric').value='n';document.getElementById('metric').dispatchEvent(new Event('change'));true`);
@@ -45,7 +45,7 @@ let ws,closeBrowser;
  await ev(`document.getElementById('plus').click();true`);
  assert.notEqual(await ev(`document.getElementById('map').getAttribute('viewBox')`),before);
  await ev(`document.getElementById('reset').click();document.getElementById('areaSearch').value='made-up-district';document.getElementById('searchForm').requestSubmit();true`);
- assert.equal(await ev(`document.getElementById('searchMessage').textContent.includes('未找到')`),true);
+ assert.equal(await ev(`document.getElementById('searchMessage').textContent.includes('not found')`),true);
  const resources=await ev(`JSON.stringify([...document.querySelectorAll('a[download],script[src],link[href]')].map(a=>a.href||a.src))`);
  for(const url of JSON.parse(resources)){const r=await fetch(url);assert.equal(r.status,200,url);}
  await ev(`document.getElementById('areaSearch').value='';document.getElementById('searchForm').requestSubmit();true`);
