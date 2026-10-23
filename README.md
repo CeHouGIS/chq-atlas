@@ -10,8 +10,9 @@ using fixed ONS December 2024 boundaries, with linked sales from 2012–2024.
 
 The page has two sections:
 
-1. A CHQ map with year selection, authority search, zoom and area details.
-2. An attribute table for all 41 baseline variables, with source fields,
+1. A CHQ map with baseline and 5/10/18-variable candidate switches, year
+   selection, score/coverage/same-cohort views, search and zoom.
+2. An attribute table that follows the selected variable set, with source fields,
    scoring rules and missing rates. The dictionary is downloadable as CSV.
 
 CHQ is averaged across the available coded variables for each transaction,
@@ -53,3 +54,7 @@ This attribution does not assert a blanket licence over other source datasets.
 
 Data snapshot processed 2026-10-21. Neither house prices nor HadUK weather
 values enter the published CHQ calculation.
+
+Selection results are in [the research summary](downloads/selection_report.md).
+Candidates are exploratory and require complete selected-variable scores;
+coverage and sample composition differ substantially across housing types.

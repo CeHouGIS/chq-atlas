@@ -38,6 +38,21 @@ let ws,closeBrowser;
  assert.equal(await ev(`Array.from(document.body.textContent).some(c=>c.codePointAt(0)>=0x4e00&&c.codePointAt(0)<=0x9fff)`),false);
  const dictionary=await (await fetch(new URL('downloads/chq_41_variables.csv',base.endsWith('/')?base:base+'/'))).text();
  assert.equal(dictionary.trim().split('\n').length,42);
+ for(const k of [5,10,18]){
+  await ev(`document.getElementById('variant').value='${k}';document.getElementById('variant').dispatchEvent(new Event('change'));true`);
+  assert.equal(await ev(`document.querySelectorAll('#variables tbody tr').length`),k);
+  const expected={5:3572966,10:3206308,18:2978391}[k];
+  assert.equal(await ev(`Object.values(rows()).reduce((s,r)=>s+r.n,0)`),expected);
+  for(const view of ['coverage','baseline','score']){
+   await ev(`document.getElementById('view').value='${view}';document.getElementById('view').dispatchEvent(new Event('change'));true`);
+   assert.equal(await ev(`document.getElementById('score').textContent.includes('NaN')`),false);
+  }
+  await ev(`document.getElementById('year').value='2024';document.getElementById('year').dispatchEvent(new Event('change'));true`);
+  assert.equal(await ev(`Object.values(rows()).every(r=>r.n<=r.total)`),true);
+  await ev(`document.getElementById('year').value='all';document.getElementById('year').dispatchEvent(new Event('change'));true`);
+ }
+ await ev(`document.getElementById('variant').value='41';document.getElementById('variant').dispatchEvent(new Event('change'));true`);
+ assert.equal(await ev(`document.getElementById('score').textContent`),'75.88');
  const before=await ev(`document.getElementById('map').getAttribute('viewBox')`);
  await ev(`document.getElementById('plus').click();true`);
  assert.notEqual(await ev(`document.getElementById('map').getAttribute('viewBox')`),before);
@@ -52,7 +67,7 @@ let ws,closeBrowser;
  assert.equal(await ev(`document.documentElement.scrollWidth<=window.innerWidth`),true,'Mobile horizontal overflow');
  if(process.env.SCREENSHOT_DIR){const shot=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:true});fs.writeFileSync(path.join(process.env.SCREENSHOT_DIR,'mobile.png'),Buffer.from(shot.data,'base64'));}
  assert.equal(errors.length,0,JSON.stringify(errors));
- console.log(JSON.stringify({status:'passed',url:base,areas:318,years:14,search:true,keyboard_selection:true,year_controls:true,variable_table_rows:41,sections:2,zoom:true,downloads:'all HTTP 200',mobile:'no horizontal overflow',runtime_errors:errors.length},null,2));
+ console.log(JSON.stringify({status:'passed',url:base,areas:318,years:14,search:true,keyboard_selection:true,year_controls:true,variable_table_rows:41,sections:2,candidate_variants:[5,10,18],coverage_and_same_cohort_views:true,zoom:true,downloads:'all HTTP 200',mobile:'no horizontal overflow',runtime_errors:errors.length},null,2));
  }finally{
   if(closeBrowser)await Promise.race([closeBrowser().catch(()=>{}),pause(1000)]);
   if(ws)ws.close();browser.kill();
