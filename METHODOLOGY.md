@@ -128,3 +128,39 @@ PCA files:
 - `downloads/chq_pca41_model_specification.json`
 - `downloads/chq_pca41_loadings.csv`
 - `downloads/chq_pca41_lad_summary.csv`
+
+## Building-only attribute patterns
+
+An exploratory clustering alternative uses the six observed building-only EPC
+ratings as separate inputs: walls, windows, heating, controls, hot water and
+lighting. One latest record per previously connected entity is used, excluding
+252 homes with any missing core attribute. The complete fitting cohort contains
+3,978,388 sampled homes (3,978,374 with mapped LAD geography).
+
+K-means uses original 0–1 ordinal scales with equal explicit dimension weights.
+Distinct rating profiles are frequency-weighted, exactly preserving the full
+cohort objective. Comparison of k = 2–10, cluster sizes and 20 whole-LAD bootstrap
+refits selects a coarse four-pattern solution using an exploratory silhouette
+tolerance of 0.02. Silhouette is 0.3318; median bootstrap ARI is 0.9915. Seven to
+nine clusters give a higher silhouette (about 0.351); four is an interpretable
+resolution choice rather than a uniquely established cluster count.
+
+The four patterns are stronger envelope/services (34.4%), weak walls with
+stronger services (32.8%), lighting shortfall (23.3%), and heating/hot-water
+shortfall (9.5%). Mean original building-only CHQ is respectively 81.6, 60.5,
+52.3 and 50.4. This total is reported after clustering and is not a fit input.
+Z-score refitting yields ARI 0.5725: classification depends on the metric.
+Pattern proportions also differ markedly by EPC report type; subgroup shares
+and within-report-type refits are provided. None validates indoor climate or
+health outcomes.
+
+The map's pattern option displays area pluralities or individual pattern shares.
+Every area contains a mixture. Its year controls select latest-transaction-year
+cohorts, not the same homes repeatedly; no housing-stock weighting is used.
+Complete-home coverage, small-area masking and tied pluralities are explicit.
+The existing transaction-mean CHQ and PCA maps retain their prior definitions.
+
+See [the full clustering report](downloads/chq_building_cluster_report.md),
+[model and sensitivity](downloads/chq_building_cluster_model.json), and
+[reproducible analysis](analysis/build_building_clusters.py). Row-level labels
+remain on the research server; only summaries and figures are published.

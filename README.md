@@ -58,3 +58,12 @@ values enter the published CHQ calculation.
 Selection results are in [the research summary](downloads/selection_report.md).
 Candidates are exploratory and require complete selected-variable scores;
 coverage and sample composition differ substantially across housing types.
+
+The six-attribute building-only pattern map is available at
+[?variant=patterns](https://cehougis.github.io/chq-atlas/?variant=patterns).
+It adds four broad exploratory profiles, each authority's mixture, and
+latest-record year cohorts. See
+[the clustering report](downloads/chq_building_cluster_report.md) and
+[the analysis script](analysis/build_building_clusters.py) for the fitting cohort,
+number-of-clusters rule, metric and report-type sensitivity. Source-level data
+remain outside this public repository.

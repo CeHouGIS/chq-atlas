@@ -51,6 +51,45 @@ let ws,closeBrowser;
   assert.equal(await ev(`Object.values(rows()).every(r=>r.n<=r.total)`),true);
   await ev(`document.getElementById('year').value='all';document.getElementById('year').dispatchEvent(new Event('change'));true`);
  }
+ // Six-attribute patterns: categories, denominators, prevalence and cohort controls.
+ await ev(`document.getElementById('variant').value='patterns';document.getElementById('variant').dispatchEvent(new Event('change'));true`);
+ assert.equal(await ev(`document.getElementById('view').value`),'pattern');
+ assert.equal(await ev(`document.querySelectorAll('#variables tbody tr').length`),4);
+ assert.equal(await ev(`document.querySelectorAll('#variables thead th').length`),10);
+ assert.equal(await ev(`Object.values(rows()).reduce((s,r)=>s+r.n,0)`),3978374);
+ assert.equal(await ev(`Object.values(rows()).reduce((s,r)=>s+r.total,0)`),3978626);
+ assert.equal(await ev(`BUILDING_CLUSTERS.summary.fit_entities_complete`),3978388);
+ assert.equal(await ev(`Object.values(rows()).every(r=>r.counts.reduce((s,n)=>s+n,0)===r.n&&r.n<=r.total&&(!r.n||Math.abs(r.shares.reduce((s,n)=>s+n,0)-1)<1e-9))`),true);
+ assert.equal(await ev(`document.getElementById('continuousLegend').hidden`),true);
+ assert.equal(await ev(`document.querySelectorAll('#patternLegend > span').length`),4);
+ assert.equal(await ev(`document.getElementById('patternBreakdown').hidden`),false);
+ assert.equal(await ev(`document.getElementById('score').textContent`),await ev(`BUILDING_CLUSTERS.profiles[rows()['E09000030'].dominant].name`));
+ assert.equal(await ev(`document.querySelector('path[data-code="E09000030"]').getAttribute('fill')`),await ev(`BUILDING_CLUSTERS.profiles[rows()['E09000030'].dominant].color`));
+ assert.equal(await ev(`document.getElementById('dictionaryDownload').getAttribute('href')`),'downloads/chq_building_cluster_profiles.csv');
+ for(const value of ['share0','share1','share2','share3','coverage','score']){
+  await ev(`document.getElementById('view').value='${value}';document.getElementById('view').dispatchEvent(new Event('change'));true`);
+  assert.equal(await ev(`document.getElementById('score').textContent`),await ev(`displayed(rows()['E09000030']).toFixed(2)`));
+  assert.equal(await ev(`document.getElementById('continuousLegend').hidden`),false);
+ }
+ for(const year of ['2012','2024']){
+  await ev(`document.getElementById('year').value='${year}';document.getElementById('year').dispatchEvent(new Event('change'));true`);
+  assert.equal(await ev(`Object.values(rows()).every(r=>r.n<=r.total)`),true);
+  assert.equal(await ev(`document.getElementById('status').textContent.includes('latest homes')`),true);
+ }
+ await ev(`document.getElementById('year').value='all';document.getElementById('year').dispatchEvent(new Event('change'));document.getElementById('view').value='pattern';document.getElementById('view').dispatchEvent(new Event('change'));true`);
+ assert.equal(await ev(`Object.values(rows()).every(r=>r.n===Object.entries(BUILDING_CLUSTERS.periods).filter(([y])=>y!=='all').reduce((s,[,data])=>s+(data[Object.keys(rows()).find(c=>rows()[c].name===r.name)]?.n||0),0))`),true);
+ if(process.env.SCREENSHOT_DIR){fs.mkdirSync(process.env.SCREENSHOT_DIR,{recursive:true});const shot=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:true});fs.writeFileSync(path.join(process.env.SCREENSHOT_DIR,'patterns-desktop.png'),Buffer.from(shot.data,'base64'));}
+ await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
+ assert.equal(await ev(`document.documentElement.scrollWidth<=window.innerWidth`),true,'Pattern mobile horizontal overflow');
+ if(process.env.SCREENSHOT_DIR){const shot=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:true});fs.writeFileSync(path.join(process.env.SCREENSHOT_DIR,'patterns-mobile.png'),Buffer.from(shot.data,'base64'));}
+ await call('Emulation.setDeviceMetricsOverride',{width:1440,height:1100,deviceScaleFactor:1,mobile:false});
+ await ev(`document.getElementById('variant').value='building';document.getElementById('variant').dispatchEvent(new Event('change'));true`);
+ assert.equal(await ev(`document.getElementById('view').value`),'score');
+ assert.equal(await ev(`document.querySelectorAll('#variables tbody tr').length`),6);
+ assert.equal(await ev(`document.getElementById('patternBreakdown').hidden`),true);
+ await ev(`document.getElementById('variant').value='pca41';document.getElementById('variant').dispatchEvent(new Event('change'));true`);
+ assert.equal(await ev(`document.querySelectorAll('#variables tbody tr').length`),41);
+ assert.equal(await ev(`document.getElementById('variables-title').textContent.includes('PCA')`),true);
  await ev(`document.getElementById('variant').value='41';document.getElementById('variant').dispatchEvent(new Event('change'));true`);
  assert.equal(await ev(`document.getElementById('score').textContent`),'75.88');
  const before=await ev(`document.getElementById('map').getAttribute('viewBox')`);
@@ -67,7 +106,7 @@ let ws,closeBrowser;
  assert.equal(await ev(`document.documentElement.scrollWidth<=window.innerWidth`),true,'Mobile horizontal overflow');
  if(process.env.SCREENSHOT_DIR){const shot=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:true});fs.writeFileSync(path.join(process.env.SCREENSHOT_DIR,'mobile.png'),Buffer.from(shot.data,'base64'));}
  assert.equal(errors.length,0,JSON.stringify(errors));
- console.log(JSON.stringify({status:'passed',url:base,areas:318,years:14,search:true,keyboard_selection:true,year_controls:true,variable_table_rows:41,sections:2,candidate_variants:[5,10,18],coverage_and_same_cohort_views:true,zoom:true,downloads:'all HTTP 200',mobile:'no horizontal overflow',runtime_errors:errors.length},null,2));
+ console.log(JSON.stringify({status:'passed',url:base,areas:318,years:14,search:true,keyboard_selection:true,year_controls:true,variable_table_rows:41,sections:2,candidate_variants:[5,10,18],building_patterns:4,pattern_share_views:4,pattern_latest_home_denominators:true,building_and_pca_regression:true,coverage_and_same_cohort_views:true,zoom:true,downloads:'all HTTP 200',mobile:'no horizontal overflow',runtime_errors:errors.length},null,2));
  }finally{
   if(closeBrowser)await Promise.race([closeBrowser().catch(()=>{}),pause(1000)]);
   if(ws)ws.close();browser.kill();

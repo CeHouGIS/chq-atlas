@@ -1,0 +1,329 @@
+{
+  "protocol": {
+    "model": "CHQ_building_patterns_v1",
+    "seed": 20261028,
+    "features": [
+      "walls_energy_eff",
+      "windows_energy_eff",
+      "mainheat_energy_eff",
+      "mainheatc_energy_eff",
+      "hot_water_energy_eff",
+      "lighting_energy_eff"
+    ],
+    "encoding": "Existing equally spaced ordinal 0, .25, .5, .75, 1; higher means better EPC rating.",
+    "method": "Weighted ordinary K-means on distinct observed six-attribute profiles; multiplicities exactly reproduce the full fitting cohort objective.",
+    "distance": "Squared Euclidean on the original 0–1 scores; six dimensions have equal explicit weights. No CHQ total, PCA, geography, year, price or weather is a clustering input.",
+    "fit_cohort": "All complete latest records, one per previously connected UPRN/EPC entity. Latest year, then source_row breaks ties. Descriptive pooled fit; no untouched-test or forecasting claim.",
+    "missing_policy": "All six ratings must be observed; no imputation. Incomplete records remain unassigned (-1).",
+    "k_candidates": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "n_init": 30,
+    "selection": {
+      "rule": "Smallest k within 0.02 silhouette of the best eligible k; eligibility requires every cluster >=2% of fitting homes and median LAD-bootstrap ARI >=0.80.",
+      "silhouette_tolerance": 0.02,
+      "minimum_cluster_share": 0.02,
+      "minimum_bootstrap_median_ari": 0.8,
+      "threshold_status": "Exploratory researcher-set descriptive resolution tolerances, not preregistered rules or housing-quality standards."
+    },
+    "silhouette_evaluation": "Fixed random sample of 5,000 complete latest homes; multiplicities preserved. Used for descriptive k selection, not external validation.",
+    "stability": "20 whole-LAD bootstrap reweightings for each k; re-fit K-means with 10 starts, evaluate ARI on the same fixed 5,000-home sample. ARI is permutation invariant. P10 is empirical, not a formal confidence bound.",
+    "sensitivity": "Refit same k after z-scoring dimensions; compare ARI, aligned centroids and shares. Also show fitted-pattern proportions by dwelling type, report type and latest transaction year.",
+    "geography": "Existing ONS 2024 LAD codes; pool one latest observation per entity. Annual maps are latest-record cohorts, not full annual transaction samples or within-home transitions.",
+    "limitations": [
+      "EPC attribute patterns are exploratory; no independent indoor thermal/health/climate outcome validation.",
+      "Six equally spaced ordinal ratings are a modelling assumption.",
+      "Clustering may reflect report method, dwelling mix and transaction year; subgroup proportions are descriptive, not adjusted effects.",
+      "A dominant area type is a plurality among classified sampled homes, not a label for every home or the population housing stock.",
+      "A nearest-centroid assignment does not establish natural or causal housing categories."
+    ],
+    "analysis_date": "2026-10-28"
+  },
+  "results": {
+    "selected_k": 4,
+    "fit_entities_total": 3978640,
+    "fit_entities_complete": 3978388,
+    "fit_entities_excluded": 252,
+    "source_transactions": 4368487,
+    "classified_source_transactions": 4368227,
+    "mapped_fit_entities": 3978374,
+    "distinct_fit_profiles": 7507,
+    "evaluation_sample": 5000,
+    "selected_diagnostics": {
+      "k": 4,
+      "inertia": 770302.0286417325,
+      "silhouette": 0.3317829871494468,
+      "calinski_harabasz": 2043.2801871295574,
+      "davies_bouldin": 1.1609437665622448,
+      "min_cluster_share": 0.09493317393879129,
+      "bootstrap_ari_median": 0.9915056801247152,
+      "bootstrap_ari_p10": 0.9835001242947918,
+      "eligible": true,
+      "selected": true
+    },
+    "sensitivity": {
+      "standardised_ari_on_evaluation_sample": 0.5725156308396976,
+      "standardised_aligned_population_agreement": 0.8124320704767861,
+      "standardised_matched_centers_0_100": {
+        "0": [
+          92.11758274525393,
+          92.22873803134213,
+          76.4815459033231,
+          86.58894631635906,
+          77.39389722691583,
+          94.74342621122265
+        ],
+        "1": [
+          35.42827721664972,
+          52.44343585712181,
+          74.00068844419799,
+          61.71609777896312,
+          70.04314328296059,
+          92.42031419259602
+        ],
+        "2": [
+          38.44622466585733,
+          50.9796057902283,
+          73.81037722091013,
+          58.08112039364162,
+          67.43886756074424,
+          26.439957537315973
+        ],
+        "3": [
+          57.069013213565036,
+          62.44214997070882,
+          18.293220725118818,
+          53.977901451539466,
+          11.881305734557223,
+          75.02961661133895
+        ]
+      },
+      "note": "Sensitivity to metric choice, not a reason to tune primary labels after observing results.",
+      "within_report_type_refits": [
+        {
+          "report_type": "2",
+          "n": 3235823,
+          "ari_global_vs_within_report_type": 0.6389074075741694,
+          "silhouette_within_report_type": 0.3072161357963042,
+          "within_report_type_centers_0_100": [
+            [
+              68.09022475098973,
+              58.325787574500374,
+              74.495177471743,
+              66.56532825177159,
+              72.04440510138352,
+              86.47457642389578
+            ],
+            [
+              38.26531549078178,
+              51.35193003579261,
+              73.18649689748923,
+              58.7303445354235,
+              67.70526344781989,
+              16.78451092338204
+            ],
+            [
+              8.271621490694264,
+              50.823629233748825,
+              74.46201333112832,
+              62.314191652337584,
+              71.66193327781161,
+              86.99356246067053
+            ],
+            [
+              49.67255650321095,
+              51.65536407326535,
+              37.979567525800356,
+              39.09016806083208,
+              19.914271999812545,
+              72.7020417839854
+            ]
+          ],
+          "within_report_type_cluster_shares": [
+            0.3430023830104428,
+            0.2356256816272089,
+            0.3157833416722732,
+            0.10558859369007513
+          ],
+          "global_pattern_shares": [
+            0.21673249742028536,
+            0.4023489541918702,
+            0.28610186651124,
+            0.0948166818766045
+          ]
+        },
+        {
+          "report_type": "3",
+          "n": 742565,
+          "ari_global_vs_within_report_type": 0.25844631006043395,
+          "silhouette_within_report_type": 0.6186922363599325,
+          "within_report_type_centers_0_100": [
+            [
+              96.33599865566931,
+              97.61731385920936,
+              82.66957004756503,
+              73.89372785705284,
+              83.4172373070442,
+              99.82904127748759
+            ],
+            [
+              99.4348952626801,
+              99.58250757927843,
+              74.47751741608613,
+              99.71525030280995,
+              76.521514555345,
+              99.92360520809002
+            ],
+            [
+              91.32628575999148,
+              95.61215239821898,
+              4.26487055749592,
+              78.23173007705229,
+              7.778548004372521,
+              97.66243634521558
+            ],
+            [
+              83.1090139586236,
+              86.29307852054362,
+              74.32507031886647,
+              79.89866196997976,
+              74.89879340711336,
+              54.01343287505587
+            ]
+          ],
+          "within_report_type_cluster_shares": [
+            0.28853366371967437,
+            0.5592466652750938,
+            0.10102011271740521,
+            0.05119955828782666
+          ],
+          "global_pattern_shares": [
+            0.8990755018079225,
+            0.004417121733450944,
+            0.0010665732966137645,
+            0.09544080316201276
+          ]
+        }
+      ]
+    },
+    "profiles": [
+      {
+        "cluster_id": 0,
+        "name": "Stronger envelope and services",
+        "name_zh": "围护与设备较优型",
+        "color": "#216e6a",
+        "n": 1368930,
+        "share": 0.34409162706101065,
+        "chq": 81.63122231718691,
+        "chq_sd": 9.285939196938106,
+        "chq_p10": 70.83333333333334,
+        "chq_p90": 91.66666666666666,
+        "Walls": 85.20475846098779,
+        "Windows": 80.09231662685455,
+        "Main heating": 75.73840517776658,
+        "Heating controls": 79.28217659047577,
+        "Hot water": 75.67359178336365,
+        "Lighting": 93.79608526367309
+      },
+      {
+        "cluster_id": 1,
+        "name": "Weak walls, stronger services",
+        "name_zh": "墙体短板、设备较好型",
+        "color": "#cc8132",
+        "n": 1305210,
+        "share": 0.3280750897097015,
+        "chq": 60.45522048814623,
+        "chq_sd": 7.94297507343243,
+        "chq_p10": 50.0,
+        "chq_p90": 70.83333333333334,
+        "Walls": 16.684039349989657,
+        "Windows": 50.39256135028079,
+        "Main heating": 74.36448923927951,
+        "Heating controls": 61.98307168961317,
+        "Hot water": 71.13765217857663,
+        "Lighting": 88.1695091211376
+      },
+      {
+        "cluster_id": 2,
+        "name": "Lighting shortfall",
+        "name_zh": "照明短板型",
+        "color": "#7956a4",
+        "n": 926567,
+        "share": 0.23290010929049657,
+        "chq": 52.32785828403847,
+        "chq_sd": 10.469562505668678,
+        "chq_p10": 37.5,
+        "chq_p90": 66.66666666666666,
+        "Walls": 43.376949535219794,
+        "Windows": 51.26021647652031,
+        "Main heating": 72.79028391902582,
+        "Heating controls": 58.01450407795659,
+        "Hot water": 66.51977137109351,
+        "Lighting": 22.00542432441475
+      },
+      {
+        "cluster_id": 3,
+        "name": "Heating and hot-water shortfall",
+        "name_zh": "采暖与热水短板型",
+        "color": "#bb4c55",
+        "n": 377681,
+        "share": 0.09493317393879129,
+        "chq": 50.35239174506173,
+        "chq_sd": 12.84905719059226,
+        "chq_p10": 33.33333333333333,
+        "chq_p90": 62.5,
+        "Walls": 62.243268790328344,
+        "Windows": 61.645343557128896,
+        "Main heating": 29.50975823512435,
+        "Heating controls": 49.37917184078627,
+        "Hot water": 17.52140033520352,
+        "Lighting": 81.81540771179911
+      }
+    ],
+    "fit_centers_0_1": [
+      [
+        0.8520475846098783,
+        0.8009231662685458,
+        0.7573840517776658,
+        0.7928217659047578,
+        0.756735917833637,
+        0.9379608526367316
+      ],
+      [
+        0.1668405846402104,
+        0.5039244552421714,
+        0.7436431831432879,
+        0.6198292922304642,
+        0.7113766105608825,
+        0.881695363132301
+      ],
+      [
+        0.43376949535220105,
+        0.5126021647652033,
+        0.7279028391902567,
+        0.5801450407795654,
+        0.6651977137109338,
+        0.2200542432441458
+      ],
+      [
+        0.6224356462383301,
+        0.6164583322301012,
+        0.2950999263923242,
+        0.49379564073099275,
+        0.17520943766912445,
+        0.8181526326659204
+      ]
+    ],
+    "fit_sha256": "443e8f6730f5c0f3b304e565eb08fc342224cbfe9f4c87eee9f1fc243db4a267",
+    "classification_formula": "Assign to the nearest saved six-dimensional centroid in squared Euclidean distance. Missing any feature => unassigned.",
+    "checks": "passed: entity uniqueness, exact ordinal coding, unchanged baseline score, assigned counts, annual/pooled aggregation, nearest centroid and profile-score consistency."
+  }
+}
