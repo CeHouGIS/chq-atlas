@@ -1,0 +1,190 @@
+{
+  "date": "2026-10-28",
+  "models": [
+    {
+      "id": "41",
+      "label": "41-variable baseline",
+      "short": "41 equal",
+      "column": "baseline41"
+    },
+    {
+      "id": "5",
+      "label": "5-variable candidate",
+      "short": "5 candidate",
+      "column": "candidate5"
+    },
+    {
+      "id": "10",
+      "label": "10-variable candidate",
+      "short": "10 candidate",
+      "column": "candidate10"
+    },
+    {
+      "id": "18",
+      "label": "18-variable candidate",
+      "short": "18 candidate",
+      "column": "candidate18"
+    },
+    {
+      "id": "building",
+      "label": "Building-only · 6 attributes",
+      "short": "Building 6",
+      "column": "building6"
+    },
+    {
+      "id": "pca41",
+      "label": "41-variable PCA · 4 PCs",
+      "short": "41 PCA",
+      "column": "pca41"
+    }
+  ],
+  "source_transactions": 4368487,
+  "latest_homes": 3978640,
+  "common_homes": 2694335,
+  "common_home_coverage": 0.6771999979892627,
+  "common_transactions": 2978391,
+  "mapped_common_homes": 2694335,
+  "eligible_authorities": 314,
+  "eligible_authority_homes": 2694274,
+  "authority_minimum_common_homes": 100,
+  "kendall_w_common_homes": 0.8882457136801942,
+  "kendall_w_common_authorities": 0.9060949008731919,
+  "kendall_w_common_transactions": 0.8908478925828092,
+  "coverage": [
+    {
+      "model": "41",
+      "label": "41-variable baseline",
+      "latest_available": 3978640,
+      "latest_total": 3978640,
+      "latest_coverage": 1.0,
+      "transaction_available": 4368487,
+      "transaction_total": 4368487,
+      "transaction_coverage": 1.0
+    },
+    {
+      "model": "5",
+      "label": "5-variable candidate",
+      "latest_available": 3235889,
+      "latest_total": 3978640,
+      "latest_coverage": 0.8133153539903083,
+      "transaction_available": 3572968,
+      "transaction_total": 4368487,
+      "transaction_coverage": 0.817895990076198
+    },
+    {
+      "model": "10",
+      "label": "10-variable candidate",
+      "latest_available": 2900840,
+      "latest_total": 3978640,
+      "latest_coverage": 0.7291034122212615,
+      "transaction_available": 3206308,
+      "transaction_total": 4368487,
+      "transaction_coverage": 0.7339630402928977
+    },
+    {
+      "model": "18",
+      "label": "18-variable candidate",
+      "latest_available": 2694335,
+      "latest_total": 3978640,
+      "latest_coverage": 0.6771999979892627,
+      "transaction_available": 2978391,
+      "transaction_total": 4368487,
+      "transaction_coverage": 0.6817900568320336
+    },
+    {
+      "model": "building",
+      "label": "Building-only · 6 attributes",
+      "latest_available": 3978388,
+      "latest_total": 3978640,
+      "latest_coverage": 0.9999366617738725,
+      "transaction_available": 4368227,
+      "transaction_total": 4368487,
+      "transaction_coverage": 0.9999404828262051
+    },
+    {
+      "model": "pca41",
+      "label": "41-variable PCA · 4 PCs",
+      "latest_available": 3978640,
+      "latest_total": 3978640,
+      "latest_coverage": 1.0,
+      "transaction_available": 4368487,
+      "transaction_total": 4368487,
+      "transaction_coverage": 1.0
+    }
+  ],
+  "pattern_associations": [
+    {
+      "model": "41",
+      "eta_squared": 0.42928058190067314,
+      "nmi_with_score_rank_quintile": 0.20854661847755573
+    },
+    {
+      "model": "5",
+      "eta_squared": 0.41292772692515123,
+      "nmi_with_score_rank_quintile": 0.2165846469383795
+    },
+    {
+      "model": "10",
+      "eta_squared": 0.3669389012021322,
+      "nmi_with_score_rank_quintile": 0.15935842796583982
+    },
+    {
+      "model": "18",
+      "eta_squared": 0.4040865284999833,
+      "nmi_with_score_rank_quintile": 0.18565534457486618
+    },
+    {
+      "model": "building",
+      "eta_squared": 0.48895086732351206,
+      "nmi_with_score_rank_quintile": 0.27800825576599225
+    },
+    {
+      "model": "pca41",
+      "eta_squared": 0.4396454113763124,
+      "nmi_with_score_rank_quintile": 0.20983965778682345
+    }
+  ],
+  "primary_sample": "One latest record per connected UPRN/EPC entity; all six published scores finite. No imputation, refit or weights added.",
+  "pairwise_sample": "One latest record per entity; both selected scores finite. Denominators differ between pairs.",
+  "area_sample": "Equal-weight authority means of identical all-six-complete homes, minimum 100 per authority. Area-level consistency does not imply household-level consistency.",
+  "tie_policy": "Spearman uses average ranks; quintiles use floor(5*(average_rank-.5)/n), clipped to 0..4, keeping equal scores together. Threshold-inclusive bottom <= empirical P10 and top >= empirical P90; groups may exceed 10% because of ties. Actual tail fractions accompany every pair.",
+  "metric_definitions": {
+    "spearman": "Pearson correlation of average ranks; ranking association, not absolute score agreement.",
+    "pearson": "Linear score correlation; does not establish equal scores.",
+    "ccc": "Lin concordance correlation = 2 cov(A,B)/(var(A)+var(B)+(mean(A)-mean(B))^2); population moments. Measures numerical agreement on the published 0–100 scales.",
+    "kappa": "Quadratic-weighted Cohen kappa for within-cohort rank quintiles, fixed labels 0..4.",
+    "bottom_jaccard": "Intersection / union of threshold-inclusive bottom-decile sets.",
+    "top_jaccard": "Intersection / union of threshold-inclusive top-decile sets.",
+    "mean_difference_b_minus_a": "Mean(score B - score A); raw published points, direction depends on selected order.",
+    "mae": "Mean absolute paired score difference, in published score points.",
+    "rmse": "Root mean squared paired score difference, in published score points.",
+    "mean_abs_percentile_gap": "Mean absolute difference of average-rank percentiles, in percentage points.",
+    "kendall_w": "Tie-corrected Kendall concordance W across all six ranking systems.",
+    "eta_squared": "Between-pattern sum of squares / total score sum of squares. Unadjusted nominal-pattern association, not validity or agreement.",
+    "nmi_with_score_rank_quintile": "Permutation-invariant normalized mutual information of nominal patterns and score-rank quintiles; descriptive association only."
+  },
+  "limitations": [
+    "Shared EPC inputs create structural dependence; high agreement is not independent climate or health validation.",
+    "41 baseline uses original full-sample coding; 5/10/18 candidates use discovery-frozen coding. Comparisons use published scores as-is, not harmonized refits.",
+    "PCA uses its published percentile rescaling and median-imputed inputs; its score units have different calibration. Low CCC can coexist with high rank correlation.",
+    "All-six complete-case restriction selects a subset; compare pairwise coverage and dwelling/report/year diagnostics.",
+    "The PCA composite sign was aligned to the equal-weight baseline during its construction; positive association was partly built in.",
+    "Quintiles and tails are empirical relative groups, not clinical thresholds. Ties are retained, without arbitrary equal-size splitting.",
+    "Cluster IDs are nominal. Pattern-score eta-squared and NMI describe association and reuse six core inputs, not causal effects or independent validation.",
+    "No confidence intervals or causal claims; results describe this dataset. The pooled latest-year cohorts are not a longitudinal panel."
+  ],
+  "source_files": {
+    "baseline": "chq_equal_variables_v1/chq_scores.parquet",
+    "candidates": "chq_selection_v1/chq_selected_scores.parquet",
+    "building": "chq_building_only_v1/chq_building_only_scores.parquet",
+    "pca": "chq_pca41_v1/chq_pca41_scores.parquet",
+    "patterns": "chq_building_clusters_v1/cluster_assignments.parquet"
+  },
+  "source_sha256": {
+    "baseline": "1ea1c8f9ec190641c2a09b9900e2dc539248eb85cb6422585698b06dd46ea6fc",
+    "candidates": "ae3d57387d797c76a614b4e6fdf98dd59186ad7df8810c3f976e3237486d0c3e",
+    "building": "443e8f6730f5c0f3b304e565eb08fc342224cbfe9f4c87eee9f1fc243db4a267",
+    "pca": "281c816d74bb48ad2c83873a342c894f1d224d236fffeec2a66bcc17e62a36bc",
+    "patterns": "11b96b072e9a13db63a90812e3d7d0fa2269301059ade9be293316eebdbd484f"
+  }
+}

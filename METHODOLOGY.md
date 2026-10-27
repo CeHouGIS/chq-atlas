@@ -164,3 +164,47 @@ See [the full clustering report](downloads/chq_building_cluster_report.md),
 [model and sensitivity](downloads/chq_building_cluster_model.json), and
 [reproducible analysis](analysis/build_building_clusters.py). Row-level labels
 remain on the research server; only summaries and figures are published.
+
+## Agreement of the six published numeric scores
+
+The Agreement section compares the original 41-variable baseline, 5/10/18-variable
+candidates, building-only six-attribute score and published four-PC score. It
+joins the unchanged scores by exact source row. Primary results use 2,694,335
+latest sampled homes with all six scores; secondary matrices use pairwise
+available latest homes or 314 authority means of the same common homes
+(minimum 100 per authority, equal authority weights). No scores are refitted or
+imputed for this comparison. Full transaction-weighted results are also in the
+downloaded pair metrics as a repeated-sales sensitivity check.
+
+This common cohort retains 67.7% of latest sampled homes, all report type 2,
+including only 1.35% of flats and 6.26% of maisonettes. It is a selected comparison
+sample. Pairwise samples have different denominators and are presented alongside
+it; score coverage and common-cohort retention by dwelling/report/year are
+explicit. The pooled comparison does not follow the map's year or area controls.
+
+Spearman and Pearson describe association. Lin CCC describes numerical
+concordance on the published scales. Quadratic-weighted rank-quintile kappa,
+threshold-inclusive bottom/top decile Jaccard, mean bias, MAE, RMSE and mean
+absolute rank-percentile gaps add complementary agreement measures. Average
+ranks preserve score ties; tied scores stay together in empirical quintiles.
+Decile cutoffs include ties and can yield groups larger than 10%; actual fractions
+are displayed. Global rank concordance uses tie-corrected Kendall W.
+
+Shared EPC inputs and the PCA's baseline-oriented sign create dependence;
+agreement is not independent outcome validation. Different coding/calibration
+is retained: candidates use discovery-frozen encoding, while the original
+baseline uses earlier full-sample coding and PCA uses percentile-rescaled,
+imputed inputs. High rank correlation can coexist with lower numerical CCC.
+Area agreement does not establish agreement among individual homes.
+
+The four building patterns are nominal categories. Their IDs are never
+correlated with numeric scores. Mean/quantile score distributions, eta-squared
+and normalized mutual information describe their association with each score
+on the common cohort. Pattern shares consequently differ from the full
+clustering sample. These analyses do not establish validity or causality.
+
+See [the agreement report](downloads/chq_agreement_report.md),
+[methods and denominators](downloads/chq_agreement_methods.json),
+[pair metrics](downloads/chq_agreement_pairs.csv), and
+[reproduction script](analysis/compare_chq_agreement.py). Only aggregates and
+exportable figures are published; no source-level records are uploaded.
