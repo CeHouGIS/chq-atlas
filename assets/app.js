@@ -4,6 +4,7 @@ const base=[-18,-18,782.78,886];let box=[...base],selected=null,drag=null,moved=
 function rows(){
  const period=$('year').value,variant=$('variant').value;
  if(variant==='building')return BUILDING_DATA[period]||{};
+ if(variant==='pca41')return PCA41_DATA[period]||{};
  return Object.fromEntries(Object.entries(DATA[period]||{}).map(([code,r])=>{
   if(variant==='41')return [code,{...r,total:r.n,baseline:r.chq}];
   const c=CANDIDATES[period]?.[code]?.[variant]||{n:0,chq:null,coverage:0,baseline:null};
@@ -16,7 +17,7 @@ function details(code){
  let r=code?rows()[code]:null;
  if(!r){const rr=Object.values(rows()),n=rr.reduce((s,r)=>s+r.n,0),total=rr.reduce((s,r)=>s+r.total,0);r={name:'England & Wales',region:'Selected period · All mapped sales',n,total,chq:n?rr.reduce((s,r)=>s+r.n*(r.chq??0),0)/n:null,baseline:n?rr.reduce((s,r)=>s+r.n*(r.baseline??0),0)/n:null,coverage:$('variant').value==='41'?(n?rr.reduce((s,r)=>s+r.n*r.coverage,0)/n:0):n/total};}
  $('name').textContent=r.name;$('region').textContent=r.region;$('score').textContent=formatScore(displayed(r));$('scoreUnit').textContent=$('view').value==='coverage'?'%':'/ 100';$('count').textContent=fmt(r.n)+' / '+fmt(r.total);$('coverage').textContent=(r.coverage*100).toFixed(1)+'%';$('code').textContent=code||'—';
- $('coverageLabel').textContent=$('variant').value==='41'?'Variable completeness':'Complete-score coverage';
+ $('coverageLabel').textContent=$('variant').value==='41'?'Variable completeness':$('variant').value==='pca41'?'Mean PCA input coverage':'Complete-score coverage';
  $('selectionNote').textContent=r.n===0?'No complete scores for this selection.':r.n<100?'Fewer than 100 scored transactions; interpret with caution.':'Sales-sample mean. Scores from different variable sets have different distributions.';
  for(const p of paths)p.classList.toggle('active',p.dataset.code===code);
 }
@@ -30,27 +31,31 @@ function candidateRule(r,variant){
  return rule;
 }
 function drawTable(){
- const variant=$('variant').value,chosen=variant==='41'?VARIABLES:variant==='building'?['walls_energy_eff','windows_energy_eff','mainheat_energy_eff','mainheatc_energy_eff','hot_water_energy_eff','lighting_energy_eff'].map(v=>VARIABLES.find(r=>r.variable===v)):SUBSETS[variant].map(v=>VARIABLES.find(r=>r.variable===v));
- const tbody=document.querySelector('#variables tbody');tbody.replaceChildren();
- chosen.forEach((r,i)=>{const tr=document.createElement('tr');
-  const values=[String(i+1),r.label,r.source_fields.split(';').join(' · '),r.higher_chq_means,candidateRule(r,variant),Number(r.missing_pct)>0&&Number(r.missing_pct)<.01?'<0.01%':Number(r.missing_pct).toFixed(2)+'%',variant==='41'||variant==='building'?'—':Math.round((FREQUENCIES[variant]?.[r.variable]||0)*100)+'%'];
-  values.forEach((v,j)=>{const td=document.createElement(j===1?'th':'td');td.textContent=v;if(j===1){td.scope='row';const code=document.createElement('code');code.textContent=r.variable;td.append(code);}tr.append(td);});tbody.append(tr);
- });
- $('variables-title').textContent='2. Variable attribute table · '+chosen.length;
- $('dictionaryDownload').href=variant==='41'?'downloads/chq_41_variables.csv':variant==='building'?'downloads/chq_building_only_dictionary.csv':'downloads/chq_'+variant+'_candidate_dictionary.csv';
- $('tableNote').textContent=(variant==='41'?'Baseline variables.':variant==='building'?'Building-only variables; equal weight 1/6 and complete records only.':'Candidate variables; equal weight 1/'+variant+' when all are available. Selection frequency: 100 geographically grouped re-fits, not climate importance.')+' Missing rates refer to the original full-sample 41-variable coding; candidate encodings were refitted on discovery data.';
+ const variant=$('variant').value;
+ const table=document.querySelector('#variables table'),thead=table.querySelector('thead'),tbody=table.querySelector('tbody');tbody.replaceChildren();
+ if(variant==='pca41'){
+  const model=PCA41_MODEL,byVar=Object.fromEntries(model.loadings.map(x=>[x.variable,x]));
+  thead.innerHTML='<tr><th scope="col">#</th><th scope="col">Variable</th><th scope="col">Source field(s)</th><th scope="col">Direction</th><th scope="col">PC1 loading</th><th scope="col">PC2 loading</th><th scope="col">PC3 loading</th><th scope="col">PC4 loading</th></tr>';
+  VARIABLES.forEach((r,i)=>{const l=byVar[r.variable],tr=document.createElement('tr');const vals=[String(i+1),r.label,r.source_fields.split(';').join(' · '),r.higher_chq_means,l.PC1.toFixed(3),l.PC2.toFixed(3),l.PC3.toFixed(3),l.PC4.toFixed(3)];vals.forEach((v,j)=>{const td=document.createElement(j===1?'th':'td');td.textContent=v;if(j===1){td.scope='row';const code=document.createElement('code');code.textContent=r.variable;td.append(code);}tr.append(td);});tbody.append(tr);});
+  $('variables-title').textContent='2. PCA loading table · 41 variables';$('dictionaryDownload').href='downloads/chq_pca41_loadings.csv';$('tableNote').textContent='PCA loadings for the 41 current-state variables. Four retained PCs explain '+(100*model.cumulative).toFixed(1)+'% of standardized variance; loadings are signed and sample-dependent.';
+ } else {
+  thead.innerHTML='<tr><th scope="col">#</th><th scope="col">Variable</th><th scope="col">Source field(s)</th><th scope="col">Higher CHQ means</th><th scope="col">Scoring rule (0–1)</th><th scope="col">Missing / N.A.</th><th scope="col">Selection frequency</th></tr>';
+  const chosen=variant==='41'?VARIABLES:variant==='building'?['walls_energy_eff','windows_energy_eff','mainheat_energy_eff','mainheatc_energy_eff','hot_water_energy_eff','lighting_energy_eff'].map(v=>VARIABLES.find(r=>r.variable===v)):SUBSETS[variant].map(v=>VARIABLES.find(r=>r.variable===v));
+  chosen.forEach((r,i)=>{const tr=document.createElement('tr');const values=[String(i+1),r.label,r.source_fields.split(';').join(' · '),r.higher_chq_means,candidateRule(r,variant),Number(r.missing_pct)>0&&Number(r.missing_pct)<.01?'<0.01%':Number(r.missing_pct).toFixed(2)+'%',variant==='41'||variant==='building'?'—':Math.round((FREQUENCIES[variant]?.[r.variable]||0)*100)+'%'];values.forEach((v,j)=>{const td=document.createElement(j===1?'th':'td');td.textContent=v;if(j===1){td.scope='row';const code=document.createElement('code');code.textContent=r.variable;td.append(code);}tr.append(td);});tbody.append(tr);});
+  $('variables-title').textContent='2. Variable attribute table · '+chosen.length;$('dictionaryDownload').href=variant==='41'?'downloads/chq_41_variables.csv':variant==='building'?'downloads/chq_building_only_dictionary.csv':'downloads/chq_'+variant+'_candidate_dictionary.csv';$('tableNote').textContent=(variant==='41'?'Baseline variables.':variant==='building'?'Building-only variables; equal weight 1/6 and complete records only.':'Candidate variables; equal weight 1/'+variant+' when all are available. Selection frequency: 100 geographically grouped re-fits, not climate importance.')+' Missing rates refer to the original full-sample 41-variable coding; candidate encodings were refitted on discovery data.';
+ }
 }
 function draw(){
  const variant=$('variant').value;
  const baselineOption=$('view').querySelector('option[value="baseline"]');
- baselineOption.disabled=variant==='building';
- if(variant==='building'&&$('view').value==='baseline')$('view').value='score';
+ baselineOption.disabled=variant==='building'||variant==='pca41';
+ if((variant==='building'||variant==='pca41')&&$('view').value==='baseline')$('view').value='score';
  let total=0,scored=0,shown=0;const rs=rows(),coverage=$('view').value==='coverage';
  for(const p of paths){const r=rs[p.dataset.code],value=r?displayed(r):null,hide=!r||!Number.isFinite(value)||(coverage?r.total<100:r.n<100);p.setAttribute('fill',hide?'#dce2e8':PALETTE[Math.round(Math.max(0,Math.min(1,coverage?value/100:(value-50)/40))*255)]);if(r){total+=r.total;scored+=r.n;if(!hide)shown++;}}
  $('status').textContent=fmt(scored)+' scored / '+fmt(total)+' records · '+shown+' areas coloured';
  $('legendLow').textContent=coverage?'0%':'50';$('legendHigh').textContent=coverage?'100%':'90';
- $('legendNote').textContent=coverage?(variant==='41'?'Mean available variables / 41.':variant==='building'?'Share of records with all six EPC variables available.':'Share of transactions with all '+variant+' selected variables available.'):'Mean score (0–100). Fixed colour scale: 50–90. Grey: no score or fewer than 100 scored records.';
- $('variantNote').textContent=variant==='41'?'Baseline: available-variable mean of 41 scores. Fixed ONS 2024 boundaries.':variant==='building'?'Building-only CHQ: six equally weighted observed EPC building attributes; no outdoor climate exposure. Complete records only. It is a transparent building-attribute proxy, not a validated full climate-housing-quality outcome.':'Research candidate: fixed '+variant+'-variable mean, complete records only. No independent climate validation. '+(variant==='10'?'Full coverage 73.4%; flats 22.8%. Heating and lighting representatives are not fully stable.':variant==='5'?'Full coverage 81.8%; lower information retention and unstable representatives.':'Full coverage 68.2%; a broader information-retention comparison.')+' Use Coverage to inspect missingness; Same cohort compares the original baseline on these exact scored sales.';
+ $('legendNote').textContent=coverage?(variant==='41'?'Mean available variables / 41.':variant==='building'?'Share of records with all six EPC variables available.':variant==='pca41'?'Mean input coverage across 41 variables.':'Share of transactions with all '+variant+' selected variables available.'):'Mean score (0–100). Fixed colour scale: 50–90. Grey: no score or fewer than 100 scored records.';
+ $('variantNote').textContent=variant==='41'?'Baseline: available-variable mean of 41 scores. Fixed ONS 2024 boundaries.':variant==='pca41'?'41-variable PCA CHQ: standardized, median-imputed inputs; four PCs explain '+(100*PCA41_MODEL.cumulative).toFixed(1)+'% of variance. PC weights follow explained variance and the sign is aligned to the equal-weight baseline. Exploratory, not health-outcome validated.':variant==='building'?'Building-only CHQ: six equally weighted observed EPC building attributes; no outdoor climate exposure. Complete records only. It is a transparent building-attribute proxy, not a validated full climate-housing-quality outcome.':'Research candidate: fixed '+variant+'-variable mean, complete records only. No independent climate validation. '+(variant==='10'?'Full coverage 73.4%; flats 22.8%. Heating and lighting representatives are not fully stable.':variant==='5'?'Full coverage 81.8%; lower information retention and unstable representatives.':'Full coverage 68.2%; a broader information-retention comparison.')+' Use Coverage to inspect missingness; Same cohort compares the original baseline on these exact scored sales.';
  if(selected&&!rs[selected])selected=null;details(selected);drawTable();
 }
 $('gradient').style.background='linear-gradient(to right,'+PALETTE.filter((c,i)=>i%17===0||i===255).join(',')+')';

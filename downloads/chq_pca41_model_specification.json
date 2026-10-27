@@ -1,0 +1,78 @@
+{
+  "model": "CHQ_pca41_v1",
+  "description": "Exploratory PCA composite of the 41 current-state CHQ variables; climate exposure is not added.",
+  "variables": [
+    "walls_energy_eff",
+    "roof_energy_eff",
+    "floor_energy_eff",
+    "windows_energy_eff",
+    "mainheat_energy_eff",
+    "mainheat_env_eff",
+    "mainheatc_energy_eff",
+    "lighting_energy_eff",
+    "hot_water_energy_eff",
+    "hot_water_env_eff",
+    "walls_description",
+    "roof_description",
+    "floor_description",
+    "windows_description",
+    "mainheat_description",
+    "mainheatcont_description",
+    "hotwater_description",
+    "main_fuel",
+    "glazed_type",
+    "multi_glaze_proportion",
+    "glazed_area",
+    "flat_top_storey",
+    "heat_loss_corridor",
+    "heated_room_share",
+    "unheated_corridor_length_per_sqrt_area",
+    "open_fireplace_density",
+    "current_energy_efficiency",
+    "current_energy_rating",
+    "energy_consumption_current",
+    "environment_impact_current",
+    "co2_emiss_curr_per_floor_area",
+    "co2_emissions_current_per_area",
+    "heating_cost_current_per_area",
+    "hot_water_cost_current_per_area",
+    "lighting_cost_current_per_area",
+    "low_energy_lighting",
+    "low_energy_fixed_lighting_share",
+    "lighting_description",
+    "solar_water_heating_flag",
+    "photo_supply",
+    "wind_turbine_present"
+  ],
+  "n_variables": 41,
+  "preprocessing": {
+    "missing_values": "Variable median imputation before PCA",
+    "standardisation": "z-score using the full published score file",
+    "input_direction": "All variables are the existing 0\u20131 higher-is-better encodings."
+  },
+  "pca": {
+    "n_components_fitted": 41,
+    "n_components_retained": 4,
+    "retained_explained_variance": 0.4343478963469019,
+    "weights_explained_variance_normalised": [
+      0.5419572525307884,
+      0.2290913484370716,
+      0.14103027728013726,
+      0.08792112175200278
+    ],
+    "sign_alignment": "Composite sign chosen for positive Pearson correlation with the 41-variable equal-weight CHQ."
+  },
+  "score_formula": "raw = sum_j(normalised explained-variance weight_j * oriented PC_j); score = 100 * clip((raw - P1)/(P99 - P1), 0, 1)",
+  "score_range": "0\u2013100; P1/P99 clipping values are frozen from the full source file.",
+  "source": {
+    "scores": "data/analysis/chq_equal_variables_v1/chq_scores.parquet",
+    "metadata": "data/analysis/chq_selection_v1/all_metadata.parquet",
+    "n_rows": 4368487
+  },
+  "limitations": [
+    "PCA is exploratory data reduction, not health-outcome or climate-resilience validation.",
+    "Median imputation permits a score for every transaction; inspect input coverage alongside the score.",
+    "The 41 inputs are current EPC/building attributes and do not include external weather or hazard exposure.",
+    "PCA signs and weights are sample-dependent; refitting on a different sample can change loadings."
+  ]
+}

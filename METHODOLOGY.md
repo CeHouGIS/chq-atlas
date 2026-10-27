@@ -101,3 +101,30 @@ mobile layout. See [README.md](README.md) for running the website checks.
 [ONS Local Authority Districts, December 2024 (BGC)](https://www.arcgis.com/home/item.html?id=6a05f93297cf4a438d08e972099f54b9).
 Contains public sector information licensed under the
 [Open Government Licence v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/).
+
+## 41-variable PCA result
+
+The website now includes `41-variable PCA CHQ · 4 PCs` as an exploratory
+alternative to the baseline. It uses the same 41 current-state, higher-is-better
+0–1 encodings. Each variable is median-imputed, all 41 columns are z-score
+standardised, and an ordinary PCA is fitted to the full score file. The first
+four PCs are retained; they explain 43.43% of the standardised variance. The
+composite is the explained-variance-weighted sum of the four oriented PC scores,
+with its sign chosen to agree positively with the equal-weight baseline. The
+result is clipped at the source 1st and 99th percentiles and linearly mapped to
+0–100. The map reports the mean composite for each local authority and year;
+the coverage view reports mean input completeness across the 41 variables.
+
+This PCA score is a data-reduction result, not a validated health, thermal
+comfort or climate-resilience outcome. PCA signs/loadings are sample-dependent,
+and median imputation means a score can be produced when some inputs are
+missing; input coverage should therefore be examined alongside the score. The
+model does not add outdoor weather, hazard exposure or household vulnerability.
+The model specification, loadings and area summaries are available in the
+three PCA downloads below.
+
+PCA files:
+
+- `downloads/chq_pca41_model_specification.json`
+- `downloads/chq_pca41_loadings.csv`
+- `downloads/chq_pca41_lad_summary.csv`
