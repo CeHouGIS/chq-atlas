@@ -3,6 +3,7 @@ const fmt=n=>n.toLocaleString('en-GB');
 const base=[-18,-18,782.78,886];let box=[...base],selected=null,drag=null,moved=false;
 function rows(){
  const period=$('year').value,variant=$('variant').value;
+ if(variant==='building')return BUILDING_DATA[period]||{};
  return Object.fromEntries(Object.entries(DATA[period]||{}).map(([code,r])=>{
   if(variant==='41')return [code,{...r,total:r.n,baseline:r.chq}];
   const c=CANDIDATES[period]?.[code]?.[variant]||{n:0,chq:null,coverage:0,baseline:null};
@@ -29,23 +30,27 @@ function candidateRule(r,variant){
  return rule;
 }
 function drawTable(){
- const variant=$('variant').value,chosen=variant==='41'?VARIABLES:SUBSETS[variant].map(v=>VARIABLES.find(r=>r.variable===v));
+ const variant=$('variant').value,chosen=variant==='41'?VARIABLES:variant==='building'?['walls_energy_eff','windows_energy_eff','mainheat_energy_eff','mainheatc_energy_eff','hot_water_energy_eff','lighting_energy_eff'].map(v=>VARIABLES.find(r=>r.variable===v)):SUBSETS[variant].map(v=>VARIABLES.find(r=>r.variable===v));
  const tbody=document.querySelector('#variables tbody');tbody.replaceChildren();
  chosen.forEach((r,i)=>{const tr=document.createElement('tr');
-  const values=[String(i+1),r.label,r.source_fields.split(';').join(' · '),r.higher_chq_means,candidateRule(r,variant),Number(r.missing_pct)>0&&Number(r.missing_pct)<.01?'<0.01%':Number(r.missing_pct).toFixed(2)+'%',variant==='41'?'—':Math.round((FREQUENCIES[variant]?.[r.variable]||0)*100)+'%'];
+  const values=[String(i+1),r.label,r.source_fields.split(';').join(' · '),r.higher_chq_means,candidateRule(r,variant),Number(r.missing_pct)>0&&Number(r.missing_pct)<.01?'<0.01%':Number(r.missing_pct).toFixed(2)+'%',variant==='41'||variant==='building'?'—':Math.round((FREQUENCIES[variant]?.[r.variable]||0)*100)+'%'];
   values.forEach((v,j)=>{const td=document.createElement(j===1?'th':'td');td.textContent=v;if(j===1){td.scope='row';const code=document.createElement('code');code.textContent=r.variable;td.append(code);}tr.append(td);});tbody.append(tr);
  });
  $('variables-title').textContent='2. Variable attribute table · '+chosen.length;
- $('dictionaryDownload').href=variant==='41'?'downloads/chq_41_variables.csv':'downloads/chq_'+variant+'_candidate_dictionary.csv';
- $('tableNote').textContent=(variant==='41'?'Baseline variables.':'Candidate variables; equal weight 1/'+variant+' when all are available. Selection frequency: 100 geographically grouped re-fits, not climate importance.')+' Missing rates refer to the original full-sample 41-variable coding; candidate encodings were refitted on discovery data.';
+ $('dictionaryDownload').href=variant==='41'?'downloads/chq_41_variables.csv':variant==='building'?'downloads/chq_building_only_dictionary.csv':'downloads/chq_'+variant+'_candidate_dictionary.csv';
+ $('tableNote').textContent=(variant==='41'?'Baseline variables.':variant==='building'?'Building-only variables; equal weight 1/6 and complete records only.':'Candidate variables; equal weight 1/'+variant+' when all are available. Selection frequency: 100 geographically grouped re-fits, not climate importance.')+' Missing rates refer to the original full-sample 41-variable coding; candidate encodings were refitted on discovery data.';
 }
 function draw(){
- let total=0,scored=0,shown=0;const rs=rows(),coverage=$('view').value==='coverage',variant=$('variant').value;
+ const variant=$('variant').value;
+ const baselineOption=$('view').querySelector('option[value="baseline"]');
+ baselineOption.disabled=variant==='building';
+ if(variant==='building'&&$('view').value==='baseline')$('view').value='score';
+ let total=0,scored=0,shown=0;const rs=rows(),coverage=$('view').value==='coverage';
  for(const p of paths){const r=rs[p.dataset.code],value=r?displayed(r):null,hide=!r||!Number.isFinite(value)||(coverage?r.total<100:r.n<100);p.setAttribute('fill',hide?'#dce2e8':PALETTE[Math.round(Math.max(0,Math.min(1,coverage?value/100:(value-50)/40))*255)]);if(r){total+=r.total;scored+=r.n;if(!hide)shown++;}}
- $('status').textContent=fmt(scored)+' scored / '+fmt(total)+' transactions · '+shown+' areas coloured';
+ $('status').textContent=fmt(scored)+' scored / '+fmt(total)+' records · '+shown+' areas coloured';
  $('legendLow').textContent=coverage?'0%':'50';$('legendHigh').textContent=coverage?'100%':'90';
- $('legendNote').textContent=coverage?(variant==='41'?'Mean available variables / 41.':'Share of transactions with all '+variant+' selected variables available.'):'Mean score (0–100). Fixed colour scale: 50–90. Grey: no score or fewer than 100 scored sales.';
- $('variantNote').textContent=variant==='41'?'Baseline: available-variable mean of 41 scores. Fixed ONS 2024 boundaries.':'Research candidate: fixed '+variant+'-variable mean, complete records only. No independent climate validation. '+(variant==='10'?'Full coverage 73.4%; flats 22.8%. Heating and lighting representatives are not fully stable.':variant==='5'?'Full coverage 81.8%; lower information retention and unstable representatives.':'Full coverage 68.2%; a broader information-retention comparison.')+' Use Coverage to inspect missingness; Same cohort compares the original baseline on these exact scored sales.';
+ $('legendNote').textContent=coverage?(variant==='41'?'Mean available variables / 41.':variant==='building'?'Share of records with all six EPC variables available.':'Share of transactions with all '+variant+' selected variables available.'):'Mean score (0–100). Fixed colour scale: 50–90. Grey: no score or fewer than 100 scored records.';
+ $('variantNote').textContent=variant==='41'?'Baseline: available-variable mean of 41 scores. Fixed ONS 2024 boundaries.':variant==='building'?'Building-only CHQ: six equally weighted observed EPC building attributes; no outdoor climate exposure. Complete records only. It is a transparent building-attribute proxy, not a validated full climate-housing-quality outcome.':'Research candidate: fixed '+variant+'-variable mean, complete records only. No independent climate validation. '+(variant==='10'?'Full coverage 73.4%; flats 22.8%. Heating and lighting representatives are not fully stable.':variant==='5'?'Full coverage 81.8%; lower information retention and unstable representatives.':'Full coverage 68.2%; a broader information-retention comparison.')+' Use Coverage to inspect missingness; Same cohort compares the original baseline on these exact scored sales.';
  if(selected&&!rs[selected])selected=null;details(selected);drawTable();
 }
 $('gradient').style.background='linear-gradient(to right,'+PALETTE.filter((c,i)=>i%17===0||i===255).join(',')+')';

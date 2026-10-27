@@ -1,0 +1,7 @@
+variable,source_field,label,weight,encoding,climate_exposure,score_observation_rule
+walls_energy_eff,walls_energy_eff,Wall energy-efficiency rating,0.16666666666666666,Very poor=0; Poor=.25; Average=.5; Good=.75; Very good=1,False,must be observed
+windows_energy_eff,windows_energy_eff,Window energy-efficiency rating,0.16666666666666666,Very poor=0; Poor=.25; Average=.5; Good=.75; Very good=1,False,must be observed
+mainheat_energy_eff,mainheat_energy_eff,Main-heating energy-efficiency rating,0.16666666666666666,Very poor=0; Poor=.25; Average=.5; Good=.75; Very good=1,False,must be observed
+mainheatc_energy_eff,mainheatc_energy_eff,Heating-controls energy-efficiency rating,0.16666666666666666,Very poor=0; Poor=.25; Average=.5; Good=.75; Very good=1,False,must be observed
+hot_water_energy_eff,hot_water_energy_eff,Hot-water energy-efficiency rating,0.16666666666666666,Very poor=0; Poor=.25; Average=.5; Good=.75; Very good=1,False,must be observed
+lighting_energy_eff,lighting_energy_eff,Lighting energy-efficiency rating,0.16666666666666666,Very poor=0; Poor=.25; Average=.5; Good=.75; Very good=1,False,must be observed

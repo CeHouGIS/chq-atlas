@@ -1,0 +1,74 @@
+{
+  "model": "CHQ_building_only_v1",
+  "description": "Building-attribute CHQ proxy excluding climate exposure",
+  "score_formula": "100 * mean of six observed ordinal EPC ratings",
+  "ordinal_encoding": {
+    "Very poor": 0.0,
+    "Poor": 0.25,
+    "Average": 0.5,
+    "Good": 0.75,
+    "Very good": 1.0
+  },
+  "components": [
+    {
+      "field": "walls_energy_eff",
+      "label": "Wall energy-efficiency rating",
+      "weight": 0.16666666666666666
+    },
+    {
+      "field": "windows_energy_eff",
+      "label": "Window energy-efficiency rating",
+      "weight": 0.16666666666666666
+    },
+    {
+      "field": "mainheat_energy_eff",
+      "label": "Main-heating energy-efficiency rating",
+      "weight": 0.16666666666666666
+    },
+    {
+      "field": "mainheatc_energy_eff",
+      "label": "Heating-controls energy-efficiency rating",
+      "weight": 0.16666666666666666
+    },
+    {
+      "field": "hot_water_energy_eff",
+      "label": "Hot-water energy-efficiency rating",
+      "weight": 0.16666666666666666
+    },
+    {
+      "field": "lighting_energy_eff",
+      "label": "Lighting energy-efficiency rating",
+      "weight": 0.16666666666666666
+    }
+  ],
+  "climate_exposure_included": false,
+  "excluded_from_score": [
+    "outdoor temperature and heatwaves",
+    "rainfall, humidity and flooding",
+    "weather scenarios",
+    "resident vulnerability",
+    "prices and energy bills",
+    "measured indoor temperature, air quality, dampness and service outages"
+  ],
+  "score_policy": "All six components must be observed; no missing-value imputation or zero filling.",
+  "source_model": "data/analysis/chq_literature_model_v1/chq_epc_proxy_scores.parquet",
+  "transaction_level": {
+    "n_rows": 4368487,
+    "n_scored": 4368227,
+    "coverage": 0.9999404828262051,
+    "mean": 64.38165283203125,
+    "sd": 16.0535831451416
+  },
+  "latest_entity_level": {
+    "n_rows": 3978640,
+    "n_scored": 3978388,
+    "coverage": 0.9999366617738725,
+    "mean": 64.8897476196289,
+    "sd": 15.851752281188965
+  },
+  "limitations": [
+    "This is a building-attribute proxy, not a validated full climate-housing-quality outcome.",
+    "EPC report-type differences require within-type sensitivity analysis.",
+    "Roof and floor attributes remain available as conditional audits but are not scored universally."
+  ]
+}
