@@ -6,6 +6,20 @@ using fixed ONS December 2024 boundaries, with linked sales from 2012–2024.
 
 **Website:** https://cehougis.github.io/chq-atlas/
 
+## Research report
+
+The Chinese research report brings together score construction, variable selection,
+coverage and maps, four building patterns, six-input PCA space, and agreement
+between all six numerical versions, with limitations and a complete variable list.
+
+- [Read online](https://cehougis.github.io/chq-atlas/reports/CHQ_research_report_zh.html)
+- [Download PDF](reports/CHQ_research_report_zh.pdf)
+- [Markdown source](reports/CHQ_research_report_zh.md)
+- [Report sources and output checksums](reports/report_manifest.json)
+
+The report documents existing scores without refitting or changing them.
+See [report build instructions](reports/README.md).
+
 ## Explore
 
 The page has four sections:
@@ -34,7 +48,7 @@ No build, API key, account, package install, or external JavaScript is required.
 python3 -m http.server 8000
 ```
 
-Open http://localhost:8000. `index.html`, `assets/`, and `downloads/` form the
+Open http://localhost:8000. `index.html`, `assets/`, `downloads/`, and `reports/` form the
 complete static site. GitHub Pages serves the root of the `main` branch.
 
 `tests/verify_site.cjs` checks desktop/mobile rendering, selection, year

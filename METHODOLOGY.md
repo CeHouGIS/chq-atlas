@@ -249,3 +249,13 @@ Validation checks confirm aligned original labels, entity uniqueness, exact
 cohort and frequency totals, equality of weighted and full-home covariance,
 orthonormal component vectors, diagonal PC covariance, zero weighted PC means,
 projection of original cluster centroids, and independent row transformations.
+
+## Consolidated research report
+
+The [Chinese research report](reports/CHQ_research_report_zh.md) summarizes all
+current published results and distinguishes transactions, latest homes and
+common-score cohorts. [HTML](reports/CHQ_research_report_zh.html) and
+[PDF](reports/CHQ_research_report_zh.pdf) include four published figures.
+It adds a descriptive [six-score distribution table](downloads/chq_report_score_distributions.csv)
+from unchanged source scores; it does not fit or revise any model.
+The [manifest](reports/report_manifest.json) records source and output checksums.
