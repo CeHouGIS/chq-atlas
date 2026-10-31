@@ -1,0 +1,151 @@
+{
+  "model": "CHQ_building_PCA2_v1",
+  "analysis_date": "2026-10-31",
+  "input_features": [
+    "walls_energy_eff",
+    "windows_energy_eff",
+    "mainheat_energy_eff",
+    "mainheatc_energy_eff",
+    "hot_water_energy_eff",
+    "lighting_energy_eff"
+  ],
+  "n_homes": 3978388,
+  "n_unique_profiles": 7507,
+  "fit_cohort": "Same complete latest-record homes used for the four existing building-only clusters. One home per previously connected entity, no missing-value imputation.",
+  "method": "Covariance PCA on original 0–1 ordinal scores. Mean-centred, not z-score standardized, to match the existing K-means metric. Exact frequency-weighted covariance of all distinct profiles.",
+  "center": [
+    0.5080330902868196,
+    0.6188233777097658,
+    0.7021240763847065,
+    0.6581474079451275,
+    0.6653296511049199,
+    0.7409272926622542
+  ],
+  "component_coefficients": [
+    [
+      0.7117497245492639,
+      0.41080914593999696,
+      0.013915088588105539,
+      0.2979869730823566,
+      0.0938005920854866,
+      0.47629797220155123
+    ],
+    [
+      -0.5250825720542053,
+      -0.10172388721169864,
+      0.0704920837521617,
+      0.02303735145939524,
+      0.10675089755767626,
+      0.8348921701226604
+    ],
+    [
+      -0.1398731354259854,
+      0.07218222896679491,
+      0.529578345756823,
+      0.3429153728043357,
+      0.7253032346753436,
+      -0.226089080622886
+    ],
+    [
+      -0.40003301188321444,
+      0.45994466987672544,
+      -0.3153436093942463,
+      0.6635073480330458,
+      -0.25458740280904074,
+      -0.15468080523111263
+    ],
+    [
+      -0.19516147122681088,
+      0.7766766881657124,
+      0.10937210024368033,
+      -0.5836611465561283,
+      0.07168153567430072,
+      -0.030405416309829403
+    ],
+    [
+      -0.004660221810374543,
+      0.030034062594137517,
+      0.7765179739361002,
+      0.11036193416370885,
+      -0.6195061939471204,
+      0.011331051131399787
+    ]
+  ],
+  "eigenvalues": [
+    0.19091051977071208,
+    0.09775372813276124,
+    0.07036393774980312,
+    0.036123881636521006,
+    0.02630094044250777,
+    0.010170014988301689
+  ],
+  "explained_variance_ratio": [
+    0.4423084722574913,
+    0.22647941140071676,
+    0.16302174361850544,
+    0.08369312973349963,
+    0.06093498042974548,
+    0.02356226256004148
+  ],
+  "PC1_PC2_cumulative_variance": 0.6687878836582081,
+  "sign_convention": "For each component, its coefficient with largest absolute value is oriented positive; PCA signs carry no intrinsic meaning.",
+  "formula": "PC_k = sum_j ((x_j - fitted mean_j) * component_coefficient[k,j]).",
+  "labels": "Four existing six-dimensional K-means labels retained; PCA is for visualization only. No reclustering in two dimensions.",
+  "display": "All 7,507 distinct profiles plotted without random sampling or jitter, weighted by their home frequency. Overlapping records share coordinates. A profile marker is not one home. Density bins use exact home counts.",
+  "density": {
+    "x_bins": 90,
+    "y_bins": 70,
+    "cell_width": 0.022272883293852797,
+    "cell_height": 0.023495727836617908,
+    "opacity": "log(1 + cell count) / log(1 + maximum displayed cell count); colour is the most frequent existing pattern in the cell."
+  },
+  "centroids": [
+    {
+      "cluster_id": 0,
+      "name": "Stronger envelope and services",
+      "name_zh": "围护与设备较优型",
+      "color": "#216e6a",
+      "n": 1368930,
+      "share": 0.34409162706101065,
+      "pc1": 0.46298127893322033,
+      "pc2": -0.017902505035507325
+    },
+    {
+      "cluster_id": 1,
+      "name": "Weak walls, stronger services",
+      "name_zh": "墙体短板、设备较好型",
+      "color": "#cc8132",
+      "n": 1305210,
+      "share": 0.3280750897097015,
+      "pc1": -0.22951832855803725,
+      "pc2": 0.3153278373520642
+    },
+    {
+      "cluster_id": 2,
+      "name": "Lighting shortfall",
+      "name_zh": "照明短板型",
+      "color": "#7956a4",
+      "n": 926567,
+      "share": 0.23290010929049657,
+      "pc1": -0.36748186754397133,
+      "pc2": -0.38506693013933635
+    },
+    {
+      "cluster_id": 3,
+      "name": "Heating and hot-water shortfall",
+      "name_zh": "采暖与热水短板型",
+      "color": "#bb4c55",
+      "n": 377681,
+      "share": 0.09493317393879129,
+      "pc1": 0.016620446916306552,
+      "pc2": -0.08015086836144038
+    }
+  ],
+  "limits": [
+    "The two axes discard the remaining variance. Visual overlap in PC1/PC2 does not invalidate or confirm six-dimensional cluster separation.",
+    "PCA axes are linear combinations of ordinal EPC scores, not physical temperature or a new CHQ score.",
+    "Projection uses the original clustering scale; z-score PCA would give different axes and variance shares.",
+    "The clusters and projection reuse the same inputs; this is an exploratory visualization, not independent climate/health validation.",
+    "The plot is pooled across latest-year cohorts and is independent of map area/year controls."
+  ]
+}

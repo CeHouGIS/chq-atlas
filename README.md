@@ -8,13 +8,15 @@ using fixed ONS December 2024 boundaries, with linked sales from 2012–2024.
 
 ## Explore
 
-The page has three sections:
+The page has four sections:
 
 1. A CHQ map with baseline and 5/10/18-variable candidate switches, year
    selection, score/coverage/same-cohort views, search and zoom.
 2. An attribute table that follows the selected variable set, with source fields,
    scoring rules and missing rates. The dictionary is downloadable as CSV.
-3. Agreement: six-score matrices for common homes, pairwise homes and same-cohort
+3. Building-pattern PCA space: an exact full-cohort six-attribute PC1/PC2
+   projection with cluster filters, profile hover and frequency-density display.
+4. Agreement: six-score matrices for common homes, pairwise homes and same-cohort
    authority means; ranking/score/quintile/tail measures, area comparison plots,
    coverage and nominal-pattern associations. See the
    [agreement report](downloads/chq_agreement_report.md).

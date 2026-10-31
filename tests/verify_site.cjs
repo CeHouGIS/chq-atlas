@@ -34,7 +34,7 @@ let ws,closeBrowser;
  await ev(`document.getElementById('year').value='all';document.getElementById('year').dispatchEvent(new Event('change'));document.querySelector('path[data-code="E09000030"]').dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));true`);
  assert.equal(await ev(`document.getElementById('score').textContent`),'75.88');
  assert.equal(await ev(`document.querySelectorAll('#variables tbody tr').length`),41);
- assert.equal(await ev(`document.querySelectorAll('main > section').length`),3);
+ assert.equal(await ev(`document.querySelectorAll('main > section').length`),4);
  assert.equal(await ev(`Array.from(document.body.textContent).some(c=>c.codePointAt(0)>=0x4e00&&c.codePointAt(0)<=0x9fff)`),false);
  const dictionary=await (await fetch(new URL('downloads/chq_41_variables.csv',base.endsWith('/')?base:base+'/'))).text();
  assert.equal(dictionary.trim().split('\n').length,42);
@@ -131,6 +131,30 @@ let ws,closeBrowser;
  assert.notEqual(await ev(`document.getElementById('agreementA').value`),await ev(`document.getElementById('agreementB').value`));
  await ev(`document.querySelectorAll('#agreementMatrix tbody tr')[0].querySelectorAll('button')[3].click();document.getElementById('agreementScatterMode').value='scores';document.getElementById('agreementScatterMode').dispatchEvent(new Event('change'));true`);
  if(process.env.SCREENSHOT_DIR){const shot=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:true});fs.writeFileSync(path.join(process.env.SCREENSHOT_DIR,'agreement-desktop.png'),Buffer.from(shot.data,'base64'));}
+ // Six-attribute PCA space keeps every observed profile and the original labels.
+ assert.equal(await ev(`BUILDING_PCA2.summary.n_homes`),3978388);
+ assert.equal(await ev(`BUILDING_PCA2.profiles.length`),7507);
+ assert.equal(await ev(`BUILDING_PCA2.profiles.reduce((n,p)=>n+p[3],0)`),3978388);
+ assert.ok(Math.abs(await ev(`BUILDING_PCA2.summary.retained`)-.668787883658)<1e-9);
+ assert.equal(await ev(`document.querySelectorAll('#pcaSpaceAxes .pca-centroid').length`),4);
+ assert.equal(await ev(`document.querySelectorAll('#pcaSpaceLoadings tbody tr').length`),6);
+ assert.equal(await ev(`document.getElementById('pcaSpaceCanvas').dataset.visibleHomes`),'3978388');
+ assert.equal(await ev(`document.getElementById('pcaSpaceCanvas').dataset.visibleProfiles`),'7507');
+ assert.equal(await ev(`(()=>{const c=document.getElementById('pcaSpaceCanvas'),a=c.getContext('2d').getImageData(0,0,c.width,c.height).data;return a.some((v,i)=>i%4===3&&v>0)})()`),true);
+ for(const i of [0,1,2,3]){
+  await ev(`document.querySelectorAll('#pcaSpaceLegend button')[${i}].click();true`);
+  assert.equal(await ev(`document.getElementById('pcaSpaceCanvas').dataset.visibleHomes`),await ev(`String(BUILDING_PCA2.clusters[${i}].n)`));
+  assert.equal(await ev(`document.querySelectorAll('#pcaSpaceAxes .pca-centroid').length`),1);
+ }
+ await ev(`document.getElementById('pcaSpaceReset').click();document.getElementById('pcaSpaceMode').value='density';document.getElementById('pcaSpaceMode').dispatchEvent(new Event('change'));true`);
+ assert.equal(await ev(`document.getElementById('pcaSpaceCanvas').dataset.mode`),'density');
+ assert.equal(await ev(`BUILDING_PCA2.bins.reduce((n,b)=>n+b.n,0)`),3978388);
+ assert.equal(await ev(`document.getElementById('pcaSpaceDisplayNote').textContent.includes('3,978,388')`),true);
+ await ev(`document.querySelector('#pcaSpaceAxes .pca-centroid').dispatchEvent(new Event('focus'));true`);
+ assert.equal(await ev(`document.getElementById('pcaSpaceDetail').textContent.includes('Projected cluster mean')`),true);
+ await ev(`document.getElementById('pcaSpaceMode').value='profiles';document.getElementById('pcaSpaceMode').dispatchEvent(new Event('change'));document.getElementById('pca-space').scrollIntoView();true`);
+ await pause(300);
+ if(process.env.SCREENSHOT_DIR){const shot=await call('Page.captureScreenshot',{format:'png'});fs.writeFileSync(path.join(process.env.SCREENSHOT_DIR,'pca-space-desktop.png'),Buffer.from(shot.data,'base64'));}
  const resources=await ev(`JSON.stringify([...document.querySelectorAll('a[download],script[src],link[href]')].map(a=>a.href||a.src))`);
  for(const url of JSON.parse(resources)){const r=await fetch(url);assert.equal(r.status,200,url);}
  await ev(`document.getElementById('areaSearch').value='';document.getElementById('searchForm').requestSubmit();true`);
@@ -140,9 +164,12 @@ let ws,closeBrowser;
  assert.equal(await ev(`document.documentElement.scrollWidth<=window.innerWidth`),true,'Mobile horizontal overflow');
  await ev(`document.querySelectorAll('#agreement .agreement-extra').forEach(d=>d.open=true);true`);
  assert.equal(await ev(`document.documentElement.scrollWidth<=window.innerWidth`),true,'Agreement expanded mobile overflow');
+ await ev(`document.querySelector('#pca-space details').open=true;document.getElementById('pca-space').scrollIntoView();true`);await pause(200);
+ assert.equal(await ev(`document.documentElement.scrollWidth<=window.innerWidth`),true,'PCA space mobile overflow');
+ if(process.env.SCREENSHOT_DIR){const shot=await call('Page.captureScreenshot',{format:'png'});fs.writeFileSync(path.join(process.env.SCREENSHOT_DIR,'pca-space-mobile.png'),Buffer.from(shot.data,'base64'));}
  if(process.env.SCREENSHOT_DIR){const shot=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:true});fs.writeFileSync(path.join(process.env.SCREENSHOT_DIR,'mobile.png'),Buffer.from(shot.data,'base64'));}
  assert.equal(errors.length,0,JSON.stringify(errors));
- console.log(JSON.stringify({status:'passed',url:base,areas:318,years:14,search:true,keyboard_selection:true,year_controls:true,variable_table_rows:41,sections:3,candidate_variants:[5,10,18],building_patterns:4,pattern_share_views:4,pattern_latest_home_denominators:true,building_and_pca_regression:true,agreement_matrix:'6 scores, 3 cohorts, 6 metrics',agreement_pair_direction:true,agreement_authority_scatter:314,coverage_and_same_cohort_views:true,zoom:true,downloads:'all HTTP 200',mobile:'no horizontal overflow',runtime_errors:errors.length},null,2));
+ console.log(JSON.stringify({status:'passed',url:base,areas:318,years:14,search:true,keyboard_selection:true,year_controls:true,variable_table_rows:41,sections:4,candidate_variants:[5,10,18],building_patterns:4,pattern_share_views:4,pattern_latest_home_denominators:true,building_and_pca_regression:true,agreement_matrix:'6 scores, 3 cohorts, 6 metrics',agreement_pair_direction:true,agreement_authority_scatter:314,pca_profiles:7507,pca_homes:3978388,pca_cluster_filters:4,pca_density:true,coverage_and_same_cohort_views:true,zoom:true,downloads:'all HTTP 200',mobile:'no horizontal overflow',runtime_errors:errors.length},null,2));
  }finally{
   if(closeBrowser)await Promise.race([closeBrowser().catch(()=>{}),pause(1000)]);
   if(ws)ws.close();browser.kill();

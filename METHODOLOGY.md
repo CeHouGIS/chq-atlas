@@ -208,3 +208,44 @@ See [the agreement report](downloads/chq_agreement_report.md),
 [pair metrics](downloads/chq_agreement_pairs.csv), and
 [reproduction script](analysis/compare_chq_agreement.py). Only aggregates and
 exportable figures are published; no source-level records are uploaded.
+
+## Building-only PCA distribution in two dimensions
+
+The PCA-space section projects the same six original 0–1 EPC attributes used
+for clustering. It uses the identical 3,978,388 complete latest sampled homes,
+mean-centred without z-score scaling, and keeps the existing six-dimensional
+cluster labels. No new cluster fit or CHQ composite is created.
+
+PCA is computed from the exact frequency-weighted sample covariance of all
+7,507 distinct six-rating profiles. This equals the covariance of the full
+complete-home cohort, rather than an unweighted PCA of unique combinations.
+PC1 explains 44.2308% and PC2 22.6479% of variance, cumulatively 66.8788%.
+The remaining four components retain 33.1212%; overlap in the two displayed
+axes does not establish separation or lack of separation in six dimensions.
+PC1 is associated mainly with walls, windows and lighting; PC2 contrasts
+lighting with wall ratings. Neither axis represents measured climate or a new
+quality standard. For reproducible sign choice, each component's coefficient
+with greatest absolute magnitude is positive.
+
+The interactive plot includes every distinct profile, without jitter or random
+sampling. Marker size increases with log home frequency; each point can
+represent multiple homes. The optional density view uses exact household
+counts within a fixed 90-by-70 grid, with colour indicating the cell's plurality
+cluster and intensity scaled by log counts. Filtering retains fixed coordinate
+axes and rescales density intensity. Cell compositions and profile frequencies
+are available on hover/tap; projected cluster means are marked with crosses.
+The pooled plot is independent of the map's year/authority controls.
+
+[Profile coordinates and frequencies](downloads/chq_building_pca2_profiles.csv),
+[coefficients and correlation loadings](downloads/chq_building_pca2_loadings.csv),
+[all explained variance shares](downloads/chq_building_pca2_variance.csv), and
+[the projection model](downloads/chq_building_pca2_model.json) are public aggregate
+outputs. Per-home coordinates and identifiers remain local. Standalone
+[PNG](downloads/chq_building_pca2.png) and [PDF](downloads/chq_building_pca2.pdf)
+figures are included. Reproduce using
+[analysis/project_building_pca.py](analysis/project_building_pca.py).
+
+Validation checks confirm aligned original labels, entity uniqueness, exact
+cohort and frequency totals, equality of weighted and full-home covariance,
+orthonormal component vectors, diagonal PC covariance, zero weighted PC means,
+projection of original cluster centroids, and independent row transformations.
